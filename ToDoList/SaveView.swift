@@ -7,8 +7,9 @@
 
 import SwiftUI
 
-struct AddView: View {
+struct SaveView: View {
     @Binding var showModal: Bool
+    @Binding var type: String
     
     @State var title: String = ""
     @State var description: String = ""
@@ -94,7 +95,7 @@ struct AddView: View {
                     .cornerRadius(10)
                 }
                 .padding(20)
-                .navigationBarTitle("Add Task", displayMode: .inline)
+                .navigationBarTitle(type, displayMode: .inline)
                 .toolbar {
                     ToolbarItemGroup(placement: .navigationBarLeading) {
                         Button(action: {
@@ -119,8 +120,8 @@ struct AddView: View {
     }
 }
 
-struct AddView_Previews: PreviewProvider {
+struct SaveView_Previews: PreviewProvider {
     static var previews: some View {
-        AddView(showModal: .constant(true))
+        SaveView(showModal: .constant(true), type: .constant("Add Task"))
     }
 }

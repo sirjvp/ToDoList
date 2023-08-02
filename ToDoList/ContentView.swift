@@ -17,17 +17,17 @@ struct ContentView: View {
     private var items: FetchedResults<Item>
 
     @State private var showModal = false
+    @State private var type = "Add Task"
 
     var body: some View {
         NavigationView {
             VStack {
-                // List of task
                 List {
                     ForEach(items) { _ in
                         NavigationLink {
-                            //
+                            DetailView(title: "Lorem ipsum", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", due: "00/00/00")
                         } label: {
-                            Text("Title")
+                            Text("Lorem ipsum")
                         }
                     }
                     .onDelete(perform: deleteItems)
@@ -44,10 +44,11 @@ struct ContentView: View {
                         Label("Add Item", systemImage: "plus")
                     }
                     .sheet(isPresented: $showModal) {
-                        AddView(showModal: $showModal)
+                        SaveView(showModal: $showModal, type: $type)
                     }
                 }
             }
+            Text("Select an item")
         }
     }
 
