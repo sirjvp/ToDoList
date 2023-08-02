@@ -5,8 +5,8 @@
 //  Created by Jonathan Valentino on 02/08/23.
 //
 
-import SwiftUI
 import CoreData
+import SwiftUI
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -16,29 +16,38 @@ struct ContentView: View {
         animation: .default)
     private var items: FetchedResults<Item>
 
+    @State private var showModal = false
+
     var body: some View {
         NavigationView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-                    } label: {
-                        Text(item.timestamp!, formatter: itemFormatter)
+            VStack {
+                // List of task
+                List {
+                    ForEach(items) { _ in
+                        NavigationLink {
+                            //
+                        } label: {
+                            Text("Title")
+                        }
                     }
+                    .onDelete(perform: deleteItems)
                 }
-                .onDelete(perform: deleteItems)
             }
+            .navigationTitle("To Do List")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     EditButton()
                 }
                 ToolbarItem {
-                    Button(action: addItem) {
+                    Button(action: { self.showModal.toggle()
+                    }) {
                         Label("Add Item", systemImage: "plus")
+                    }
+                    .sheet(isPresented: $showModal) {
+                        AddView(showModal: $showModal)
                     }
                 }
             }
-            Text("Select an item")
         }
     }
 
