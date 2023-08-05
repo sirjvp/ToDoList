@@ -8,14 +8,15 @@
 import SwiftUI
 
 struct SaveView: View {
+    @ObservedObject var vm: TaskViewModel
     @Binding var showModal: Bool
     @Binding var type: String
-    
+
+    @State var showDate = false
+
     @State var title: String = ""
     @State var description: String = ""
     @State var due = Date()
-    
-    @State var showDate = false
 
     var body: some View {
         NavigationView {
@@ -53,15 +54,14 @@ struct SaveView: View {
                         TextField("Description", text: $description)
                             .frame(maxWidth: .infinity, alignment: .leading)
                         Spacer()
-                        
                     }
                     .frame(height: 50)
                     .frame(maxWidth: .infinity)
                     .background(.white)
                     .cornerRadius(10)
-                    
+
                     // Due Date
-                    VStack(spacing: 0){
+                    VStack(spacing: 0) {
                         HStack {
                             Spacer()
                                 .frame(width: 20)
@@ -80,7 +80,7 @@ struct SaveView: View {
                         .onTapGesture {
                             showDate.toggle()
                         }
-                        
+
                         if showDate == true {
                             Divider()
                             DatePicker("", selection: $due)
@@ -107,6 +107,10 @@ struct SaveView: View {
                     ToolbarItemGroup(placement: .navigationBarTrailing) {
                         Button(action: {
                             self.showModal.toggle()
+
+                            if type == "Add Task" {
+                                vm.addItem(title: title, description: description, due: due)
+                            }
                         }, label: {
                             Text("Save")
                                 .fontWeight(.bold)
@@ -122,6 +126,6 @@ struct SaveView: View {
 
 struct SaveView_Previews: PreviewProvider {
     static var previews: some View {
-        SaveView(showModal: .constant(true), type: .constant("Add Task"))
+        SaveView(vm: TaskViewModel(), showModal: .constant(true), type: .constant("Add Task"))
     }
 }

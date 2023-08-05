@@ -5,12 +5,13 @@
 //  Created by Jonathan Valentino on 02/08/23.
 //
 
+import CoreData
 import SwiftUI
 
 struct DetailView: View {
     @State private var showModal = false
     @State var type = "Edit Task"
-
+    
     @State var title: String
     @State var description: String
     @State var due: String
@@ -43,9 +44,9 @@ struct DetailView: View {
                 }) {
                     Text("Edit")
                 }
-                .sheet(isPresented: $showModal) {
-                    SaveView(showModal: $showModal, type: $type, title: title, description: description)
-                }
+//                .sheet(isPresented: $showModal) {
+//                    SaveView(showModal: $showModal, type: $type, title: title, description: description)
+//                }
             }
         }
     }
@@ -57,8 +58,6 @@ private let itemFormatter: DateFormatter = {
     formatter.timeStyle = .medium
     return formatter
 }()
-
-// Text(item.timestamp!, formatter: itemFormatter)
 
 struct DetailView_Previews: PreviewProvider {
     static var previews: some View {
