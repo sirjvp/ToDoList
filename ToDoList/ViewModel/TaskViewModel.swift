@@ -55,6 +55,20 @@ class TaskViewModel: ObservableObject {
         }
     }
     
+    func editItem(task: Item, title: String, description: String, due: Date) {
+//        offsets.map { tasks[$0] }.forEach(container.viewContext.delete)
+        task.title = title
+        task.desc = description
+        task.due = due
+        
+        do {
+            try container.viewContext.save()
+            getItem()
+        } catch {
+            print("Failed to edit context \(error)")
+        }
+    }
+    
     func deleteItems(offsets: IndexSet) {
         offsets.map { tasks[$0] }.forEach(container.viewContext.delete)
 

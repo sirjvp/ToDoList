@@ -9,30 +9,28 @@ import CoreData
 import SwiftUI
 
 struct DetailView: View {
+    @ObservedObject var vm: TaskViewModel
+
     @State private var showModal = false
     @State var type = "Edit Task"
-    
-    @State var title: String
-    @State var description: String
-    @State var due: String
+    @State var task: Item
 
     var body: some View {
         VStack {
             Form {
                 // Title
-                Text(title)
+                Text(task.title ?? "")
                     .font(.headline)
 
                 // Description
-                Text(description)
+                Text(task.desc ?? "")
                     .foregroundColor(.gray)
 
                 // Due Date
                 HStack {
                     Text("Due Date")
                     Spacer()
-                        .frame(maxWidth: .infinity)
-                    Text(due)
+                    Text(task.due ?? Date.now, formatter: itemFormatter)
                         .foregroundColor(.gray)
                 }
             }
@@ -44,9 +42,9 @@ struct DetailView: View {
                 }) {
                     Text("Edit")
                 }
-//                .sheet(isPresented: $showModal) {
-//                    SaveView(showModal: $showModal, type: $type, title: title, description: description)
-//                }
+                .sheet(isPresented: $showModal) {
+                    SaveView(vm: vm, showModal: $showModal, type: $type, task: task, title: task.title!, description: task.desc!, due: task.due!)
+                }
             }
         }
     }
@@ -61,6 +59,16 @@ private let itemFormatter: DateFormatter = {
 
 struct DetailView_Previews: PreviewProvider {
     static var previews: some View {
-        DetailView(title: "Lorem ipsum", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", due: "00/00/00")
+        // Create a preview ManagedObjectContext
+        let context = PersistenceController.preview.container.viewContext
+
+        // Create a dummy Item and add it to the context
+        let dummyItem = Item(context: context)
+        dummyItem.title = "Lorem ipsum"
+        dummyItem.desc = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        dummyItem.due = Date.now
+
+        return DetailView(vm: TaskViewModel(), task: dummyItem)
+            .environment(\.managedObjectContext, context)
     }
 }
