@@ -30,10 +30,6 @@ struct ContentView: View {
                             NavigationLink {
                                 DetailView(vm: vm, task: task)
                             } label: {
-                                Image(systemName: "circle")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(height: 20)
                                 Text(task.title ?? "No Name")
                             }
                         }

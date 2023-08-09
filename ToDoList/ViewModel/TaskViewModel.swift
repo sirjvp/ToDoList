@@ -42,6 +42,7 @@ class TaskViewModel: ObservableObject {
         newItem.title = title
         newItem.desc = description
         newItem.due = due
+        newItem.status = "incomplete"
 
         do {
             try container.viewContext.save()
@@ -80,6 +81,17 @@ class TaskViewModel: ObservableObject {
             // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
             let nsError = error as NSError
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        }
+    }
+    
+    func editStatus(task: Item, status: String) {
+        task.status = status
+        
+        do {
+            try container.viewContext.save()
+            getItem()
+        } catch {
+            print("Failed to edit context \(error)")
         }
     }
 }

@@ -14,24 +14,35 @@ struct DetailView: View {
     @State private var showModal = false
     @State var type = "Edit Task"
     @State var task: Item
+    @State var isFinish = false
 
     var body: some View {
-        VStack {
-            Form {
-                // Title
-                Text(task.title ?? "")
-                    .font(.headline)
+        VStack(spacing: 0) {
+            List {
+                Section {
+                    Text(task.title ?? "")
 
-                // Description
-                Text(task.desc ?? "")
-                    .foregroundColor(.gray)
-
-                // Due Date
-                HStack {
-                    Text("Due Date")
-                    Spacer()
-                    Text(task.due ?? Date.now, formatter: itemFormatter)
+                    Text(task.desc ?? "")
                         .foregroundColor(.gray)
+                }
+
+                Section {
+                    HStack {
+                        Text("Due Date")
+                        Spacer()
+                        Text(task.due ?? Date(), formatter: itemFormatter)
+                            .foregroundColor(.gray)
+                    }
+
+                    Toggle("Finish", isOn: $isFinish)
+                        .onChange(of: isFinish) { _ in
+                            vm.editStatus(task: task, status: isFinish ? "complete" : "incomplete")
+                        }
+                        .onAppear {
+                            if task.status == "complete" {
+                                isFinish = true
+                            }
+                        }
                 }
             }
         }
@@ -67,6 +78,7 @@ struct DetailView_Previews: PreviewProvider {
         dummyItem.title = "Lorem ipsum"
         dummyItem.desc = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
         dummyItem.due = Date.now
+        dummyItem.status = "complete"
 
         return DetailView(vm: TaskViewModel(), task: dummyItem)
             .environment(\.managedObjectContext, context)
