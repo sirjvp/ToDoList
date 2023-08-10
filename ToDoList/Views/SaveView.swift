@@ -8,15 +8,17 @@
 import SwiftUI
 
 struct SaveView: View {
+    @ObservedObject var vm: TaskViewModel
     @Binding var showModal: Bool
     @Binding var type: String
-    
-    @State var title: String = ""
-    @State var description: String = ""
-    @State var due = Date()
+    @State var task: Item?
     
     @State var showDate = false
 
+    @State var title: String = ""
+    @State var description: String = ""
+    @State var due = Date()
+   
     var body: some View {
         NavigationView {
             ScrollView {
@@ -107,6 +109,12 @@ struct SaveView: View {
                     ToolbarItemGroup(placement: .navigationBarTrailing) {
                         Button(action: {
                             self.showModal.toggle()
+
+                            if type == "Add Task" {
+                                vm.addItem(title: title, description: description, due: due)
+                            } else {
+                                vm.editItem(task: task!, title: title, description: description, due: due)
+                            }
                         }, label: {
                             Text("Save")
                                 .fontWeight(.bold)
@@ -122,6 +130,6 @@ struct SaveView: View {
 
 struct SaveView_Previews: PreviewProvider {
     static var previews: some View {
-        SaveView(showModal: .constant(true), type: .constant("Add Task"))
+        SaveView(vm: TaskViewModel(), showModal: .constant(true), type: .constant("Add Task"))
     }
 }
